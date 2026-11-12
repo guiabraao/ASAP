@@ -1,116 +1,52 @@
+import { useEffect, useRef, useState } from 'react'
+import Brand from '../Brand'
+import Arrow from '../Arrow'
+import { navigation, contact } from '../../content'
 import './styles.css'
-import { useEffect, useState } from 'react'
-import AOS from 'aos'
-import Logo from '../../assets/logo.png'
-import WhiteLogo from '../../assets/whiteLogo.png'
-import LogoHorizontal from '../../assets/logoHori.png'
-import Banner from '../../assets/banner.png'
-import Valor1 from '../../assets/img1.jpg'
-import Valor2 from '../../assets/img2.jpg'
-import Valor3 from '../../assets/img3.jpg'
-import Menu from '../../assets/menu.svg'
-import BannerMobile from '../../assets/bannerMobile.png'
 
 export default function Header() {
-
-    const [expanded, setExpanded] = useState(null)
-
-    const toggleNav = () => {
-        setExpanded(!expanded)
+  const [open, setOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  const toggle = useRef(null)
+  const panel = useRef(null)
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+  useEffect(() => {
+    if (!open) return
+    const previous = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    panel.current.querySelector('a')?.focus()
+    const onKey = (event) => {
+      if (event.key === 'Escape') { setOpen(false); toggle.current.focus() }
+      if (event.key === 'Tab') {
+        const links = [...panel.current.querySelectorAll('a')]
+        const first = toggle.current
+        const last = links.at(-1)
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus() }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus() }
+      }
     }
-
-    useEffect(() => {
-        AOS.init({
-            duration: 2000,
-            once: false
-        });
-    }, []);
-
-
-    return (
-        <>
-            <header>
-                <div className="headerTop" data-aos="fade-down">
-
-                    <div className="leftHeaderTop">
-                        <img src={Logo} alt="" />
-                        <div className="borderHeader"></div>
-                        <div className="logoHorizontal"><img src={LogoHorizontal} alt="" /></div>
-                    </div>
-
-                    <nav>
-                        <ul className='header-nav-list'>
-                            <a href="#empresa"><li><span>Empresa</span></li></a>
-                            <a href="#servicos"><li><span>Serviços</span></li></a>
-                            <a href="#clientes"><li><span>Clientes</span></li></a>
-                            <a href="#contato"><li><span>Contato</span></li></a>
-                        </ul>
-                    </nav>
-
-                </div>
-                <div className="headerMobile">
-                    <img src={Menu} alt="" onClick={toggleNav} />
-                </div>
-                {expanded && (
-                    <div className="boxHeaderMobile" data-aos="fade-down">
-                        <img src={WhiteLogo} alt="" />
-                        <nav>
-                            <ul className='mobile-nav-list'>
-                                <a href="#empresa"><li><span>Empresa</span></li></a>
-                                <a href="#servicos"><li><span>Serviços</span></li></a>
-                                <a href="#clientes"><li><span>Clientes</span></li></a>
-                                <a href="#contato"><li><span>Contato</span></li></a>
-                            </ul>
-                        </nav>
-                    </div>
-                )}
-                <div className="bannerHeader">
-                    <img src={Banner} alt="" data-aos="zoom-down" id='bannerHeaderDefault' />
-                    <img src={BannerMobile} alt="" id='bannerHeaderMobile' />
-                    <div className="contentBannerHeader">
-                        <div className="textBannerHeader">
-                            <h2 data-aos="fade-left" data-aos-delay="300">Entregando a <span className='solucao'>solução</span> correta para o seu negócio</h2>
-                            <p data-aos="zoom-in" data-aos-delay="600">Nascemos para transformar a relação entre empresa e contador. Mais do que emitir guias, somos o seu braço direito em gestão financeira e planejamento tributário estratégico.</p>
-                        </div>
-                    </div>
-                </div>
-            </header>
-            <div className="valores">
-                <div className="containerValores">
-
-                    <div className="boxValores">
-
-                        <div className="valoresList">
-
-                            <div className="valorItem" data-aos="fade-down" data-aos-delay="400">
-                                <img src={Valor1} alt="" />
-                                <div className="valorItemContent">
-                                    <h2>Agilidade</h2>
-                                    <p>Atendimento dinâmico e suporte 24 horas consultivo no tempo que o seu negócio exige. Na ASAP, a eficiência é a nossa prioridade para que você não perca tempo com burocracia.</p>
-                                </div>
-                            </div>
-                            <div className="valorItem" data-aos="fade-down" data-aos-delay="1000">
-                                <img src={Valor2} alt="" />
-                                <div className="valorItemContent">
-                                    <h2>Previsibilidade</h2>
-                                    <p>Antecipamos cenários através de uma assessoria financeira ativa. Tenha clareza total sobre o futuro do seu caixa e tome decisões baseadas em dados reais.</p>
-                                </div>
-                            </div>
-                            <div className="valorItem" data-aos="fade-down" data-aos-delay="1600">
-                                <img src={Valor3} alt="" />
-                                <div className="valorItemContent">
-                                    <h2>Segurança</h2>
-                                    <p>Proteção jurídica e tributária absoluta. Aplicamos inteligência fiscal para garantir que sua empresa esteja sempre em conformidade, pagando apenas o imposto justo.</p>
-                                </div>
-                            </div>
-
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-
-        </>
-    )
-
+    const desktop = window.matchMedia('(min-width: 901px)')
+    const onResize = () => { if (desktop.matches) setOpen(false) }
+    desktop.addEventListener('change', onResize)
+    document.addEventListener('keydown', onKey)
+    return () => { document.body.style.overflow = previous; document.removeEventListener('keydown', onKey); desktop.removeEventListener('change', onResize) }
+  }, [open])
+  return <header className={`site-header ${scrolled ? 'is-scrolled' : ''} ${open ? 'menu-is-open' : ''}`}>
+    <div className="header-inner wrap">
+      <a className="brand-link" href="#inicio" aria-label="ASAP Contábil, início" onClick={() => setOpen(false)}><Brand /></a>
+      <span className="header-tagline">Clareza para<br />seguir em frente.</span>
+      <nav className="desktop-nav" aria-label="Navegação principal">{navigation.map(([label, href]) => <a key={href} href={href}>{label}</a>)}</nav>
+      <a className="header-contact" href={contact.whatsapp} target="_blank" rel="noreferrer">Vamos conversar <Arrow diagonal /></a>
+      <button ref={toggle} className="menu-toggle" aria-expanded={open} aria-controls="mobile-menu" aria-label={open ? 'Fechar menu' : 'Abrir menu'} onClick={() => setOpen(!open)}><span /><span /></button>
+    </div>
+    {open && <nav id="mobile-menu" className="mobile-nav" aria-label="Navegação mobile" ref={panel}>
+      {[...navigation, ['Contato', '#contato']].map(([label, href], index) => <a href={href} key={href} onClick={() => setOpen(false)}><span className="mobile-nav-index">0{index + 1}</span>{label}<Arrow diagonal /></a>)}
+      <a className="mobile-whatsapp" href={contact.whatsapp} target="_blank" rel="noreferrer">Falar pelo WhatsApp <Arrow diagonal /></a>
+    </nav>}
+  </header>
 }

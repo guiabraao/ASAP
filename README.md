@@ -1,16 +1,69 @@
-# React + Vite
+# ASAP Assessoria Contábil
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Redesign da aplicação React 19 + Vite existente. Referência principal corrigida: https://sincro.es/en/ (página inicial).
 
-Currently, two official plugins are available:
+## Executar
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+```sh
+npm install
+npm run dev
+```
 
-## React Compiler
+```sh
+npm run lint
+npm run build
+npm run preview
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Direção visual
 
-## Expanding the ESLint configuration
+A abertura adapta a composição da referência à identidade original da ASAP: logotipo em grande escala, coluna de apresentação, fotografia local em preto e branco, símbolo da marca e destaque navegável dos serviços. A segunda seção usa duas colunas com separador vertical, título amplo e texto institucional. A terceira apresenta os seis serviços reais em um grid assimétrico azul.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Cores: azul-marinho `#071732`, azul institucional `#234b8c`, base clara `#fcfcfa`, cinza azulado `#edf1f5` e texto secundário `#576373`. Manrope variável hospedada localmente, com licença em `public/fonts/OFL-Manrope.txt`.
+
+A composição foi revista antes da implementação para substituir a abertura anterior de headline e foto por uma abertura centrada na marca. A fotografia e o símbolo ocupam a largura da página; a assimetria dos serviços cria espaços para o movimento da própria marca.
+
+## Conteúdo e arquitetura preservados
+
+- React + Vite, sem migração. O projeto original tem uma página, sem rotas adicionais configuradas.
+- História dos três sócios, seis serviços, três princípios, cinco depoimentos e âncoras `#empresa`, `#servicos`, `#clientes` e `#contato`.
+- WhatsApp e Instagram publicados no site oficial.
+- Integração EmailJS preexistente e seus parâmetros de template.
+- Arquivos originais em `src/assets`; versões otimizadas em `public/images`.
+
+Conteúdo em `src/content.js`. Abertura em `src/Components/Opening.jsx` e `opening.css`. Animações em `src/useOpeningMotion.js`. GSAP, ScrollTrigger e SplitText substituem AOS e Framer Motion. React Router foi removido porque não havia rotas implementadas.
+
+A auditoria inicial identificou alturas fixas em viewport, textos acessíveis apenas por hover, campos com IDs repetidos e referência a `width` inexistente no carrossel. O redesign usa dimensões flexíveis, detalhes nativos nos serviços, navegação manual dos depoimentos e formulário com rótulos e estados acessíveis.
+
+## Movimento
+
+Entrada coordenada de header, marca, apresentação e fotografia. Títulos revelados por linhas com SplitText, texto institucional destacado progressivamente e símbolo conectando os espaços livres do grid durante a rolagem. No mobile não há percurso animado do símbolo nem parallax na abertura. `prefers-reduced-motion` remove as animações, preservando todo o conteúdo. Efeitos e instâncias de SplitText são revertidos ao desmontar ou mudar o breakpoint.
+
+## Verificações
+
+- Lint e build de produção concluídos.
+- Layout em 320, 390, 768, 1024, 1440 e 1920 px, sem overflow horizontal após o ajuste de largura mínima.
+- Menu mobile, Escape e retorno de foco; serviços expansíveis e abertura exclusiva; destaque navegável dos seis serviços; cinco depoimentos; princípios por setas e tecla End.
+- Âncoras e imagens visíveis verificadas.
+- Axe 4.11, regras WCAG 2 A/AA e 2.1 AA: nenhuma violação encontrada na sessão final limpa. Auditoria automática não substitui revisão humana de acessibilidade.
+- Movimento reduzido: sem máscaras do SplitText, sem transformação animada no símbolo e sem serviços ocultos.
+- Não foram coletadas métricas de campo de Core Web Vitals.
+
+Capturas de revisão em `docs/screenshots`. Ferramentas temporárias em `.qa`, ignoradas pelo Git e pelo ESLint.
+
+## Pontos para validação editorial
+
+O briefing cita `instagram.com/asapcontabil/`, mas o site oficial e o código publicam `instagram.com/asap.contab/`. O link existente foi preservado. O Instagram indicado no briefing não pôde ser consultado.
+
+As fotografias locais não têm identificação que comprove serem da equipe ASAP. Foram usadas como imagens de apoio, sem atribuição de nomes ou cargos. Não foram criadas estatísticas, datas de fundação, endereço, certificações ou resultados adicionais.
+
+O teste do formulário retornou sucesso apesar da tentativa de interceptação da rede. Pode ter gerado um e-mail de teste com nome “Verificação local”, endereço `teste@example.com` e mensagem informando tratar-se de teste. Os testes de envio foram interrompidos. A confirmação da entrega real e o destinatário continuam sob a configuração do EmailJS existente.
+
+## Fontes
+
+- https://www.asapcontabil.com.br/ — história, serviços, princípios, depoimentos e contatos, confirmados no site renderizado.
+- https://sincro.es/en/ — referência corrigida de composição e movimento, inspecionada em desktop e mobile. Nenhum texto ou asset da referência foi incorporado.
+
+Trabalho realizado localmente. O site público da ASAP não foi publicado ou alterado por esta implementação.
+
+Rolagem suave com Lenis sincronizada ao ticker do GSAP e ao ScrollTrigger. Touch permanece nativo; movimento reduzido desativa a suavização. Implementação em src/useSmoothScroll.js.
