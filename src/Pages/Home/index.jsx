@@ -10,6 +10,8 @@ import { contact, principles } from '../../content'
 import { Hero, About, Services } from '../../Components/Opening'
 import useOpeningMotion from '../../useOpeningMotion'
 import useSmoothScroll from '../../useSmoothScroll'
+import IntroOverlay from '../../Components/IntroOverlay'
+import useIntroAnimation from '../../useIntroAnimation'
 import './styles.css'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -45,6 +47,7 @@ function Principles() {
 export default function Home() {
   const root = useRef(null)
   useSmoothScroll()
+  useIntroAnimation(root)
   useOpeningMotion(root)
   useEffect(() => {
     const mm = gsap.matchMedia()
@@ -62,6 +65,7 @@ export default function Home() {
     return () => { mounted = false; mm.revert() }
   }, [])
   return <div ref={root} id="inicio">
+    <IntroOverlay />
     <a className="skip-link" href="#conteudo">Pular para o conteúdo</a>
     <Header />
     <main id="conteudo" tabIndex="-1">

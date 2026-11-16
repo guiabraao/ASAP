@@ -11,16 +11,6 @@ export default function useOpeningMotion(root) {
     media.add({ desktop: '(min-width: 901px)', mobile: '(max-width: 900px)', reduced: '(prefers-reduced-motion: reduce)' }, ({ conditions }) => {
       if (conditions.reduced) return
       const context = gsap.context(() => {
-        // Abertura: marca, apresentação, fotografia e ponto de contato.
-        gsap.timeline({ defaults: { ease: 'power3.out' } })
-          .from('.header-inner', { y: -10, opacity: 0, duration: .5 }, 0)
-          .from('.hero-wordmark', { yPercent: 105, duration: 1 }, .08)
-          .from('.hero-intro', { y: 25, opacity: 0, duration: .7 }, .25)
-          .from('.hero-meta', { y: 12, opacity: 0, duration: .6 }, .4)
-          .from('.hero-media picture', { clipPath: 'inset(0 0 100% 0)', duration: 1, clearProps: 'clipPath' }, .15)
-          .from('.hero-emblem img', { scale: .86, rotation: -12, opacity: 0, duration: 1 }, .45)
-          .from('.hero-service-spotlight', { y: 22, opacity: 0, duration: .65 }, .6)
-
         // SplitText mantém um rótulo único e legível para leitores de tela.
         gsap.utils.toArray('[data-line-reveal]', root.current).forEach(element => {
           SplitText.create(element, {

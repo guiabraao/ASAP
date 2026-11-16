@@ -1,0 +1,9 @@
+.intro-overlay { display: none; position: fixed; inset: 0; z-index: 10000; height: 100dvh; background: #071732; color: #fcfcfa; align-items: center; justify-content: center; flex-direction: column; overflow: hidden; }
+.intro-brand-mask { width: clamp(210px, 35vw, 540px); overflow: hidden; padding-block: 8px; }
+.intro-brand { display: block; width: 100%; height: auto; object-fit: contain; filter: brightness(0) invert(1); }
+.intro-caption { margin: 24px 0 0; font-size: 12px; letter-spacing: .16em; }
+.intro-skip { position: absolute; bottom: max(28px, env(safe-area-inset-bottom)); right: max(28px, env(safe-area-inset-right)); padding: 12px 0; border: 0; background: transparent; color: inherit; font: inherit; font-size: 12px; cursor: pointer; }
+.intro-skip span { margin-left: 20px; }
+.intro-skip:focus-visible { outline: 2px solid currentColor; outline-offset: 6px; }
+.hero-intro .intro-line-mask { overflow: hidden; padding-bottom: .12em; margin-bottom: -.12em; }
+@media (max-width: 600px) { .intro-brand-mask { width: 65vw; max-width: 300px; } .intro-caption { font-size: 10px; margin-top: 18px; } .intro-skip { right: 24px; bottom: max(24px, env(safe-area-inset-bottom)); } }
